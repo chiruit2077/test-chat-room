@@ -9,39 +9,45 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.testchatroom.dataset.ChatDataLines;
 import com.example.testchatroom.dataset.ChatLine;
+import com.example.testchatroom.fragment.ChatBaseDialog;
+import com.example.testchatroom.fragment.ChatInputName;
+import com.example.testchatroom.fragment.ChatInputName.OnInputName;
 import com.example.testchatroom.fragment.ChatLines;
 import com.example.testchatroom.fragment.ChatSend;
-import com.example.testchatroom.fragment.ChatSend.OnChatLineListener;
+import com.example.testchatroom.fragment.ChatSend.OnChatLineSentListener;
 
-public final class ChatRoom extends FragmentActivity implements OnChatLineListener {
-    public static final String  TAG                = "TEST-CHAT-ROOM";
-    private static final String DLG                = "TEST-CHAT-ROOM-DLG";
-    public static final String  KEY_RESTORED_LINES = "Restored Lines";
-    private ChatDataLines       mLines;
+public final class ChatRoom extends FragmentActivity implements OnChatLineSentListener, OnInputName {
+    public static final String TAG    = "TEST-CHAT-ROOM";
+    // public static final String KEY_RESTORED_LINES = "Restored Lines";
+    private ChatDataLines      mLines = new ChatDataLines();
+
+    public interface OnAddLineListener {
+        void onAddLine( ChatDataLines _lines );
+    }
+
+    private OnAddLineListener mOnAddLine;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.chat_room );
-        init( this );
-
+        ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatInputName.class.getName() ) );
     }
 
     @Override
-    protected void onRestoreInstanceState( Bundle _savedInstanceState ) {
-        super.onRestoreInstanceState( _savedInstanceState );
+    public void onInputName( String _name ) {
+        init( this, _name );
     }
 
-    private static void init( FragmentActivity _activity ) {
+    private static void init( FragmentActivity _activity, String _name ) {
         Context cxt = _activity.getApplicationContext();
         FragmentManager fm = _activity.getSupportFragmentManager();
         try {
             initChatLines( cxt, fm );
-            initChatSend( cxt, fm );
+            initChatSend( cxt, fm, _name );
         }
         catch( Exception _e ) {
             Log.e( TAG, _e.getMessage() );
@@ -58,27 +64,12 @@ public final class ChatRoom extends FragmentActivity implements OnChatLineListen
         trans.commit();
     }
 
-    private static void initChatSend( Context _cxt, FragmentManager _fm ) {
+    private static void initChatSend( Context _cxt, FragmentManager _fm, String _name ) {
+        Bundle args = new Bundle();
+        args.putString( ChatSend.KEY_YOUR_NAME, _name );
         FragmentTransaction trans = _fm.beginTransaction();
-        trans.replace( R.id.chat_send_container, Fragment.instantiate( _cxt, ChatSend.class.getName() ) );
+        trans.replace( R.id.chat_send_container, Fragment.instantiate( _cxt, ChatSend.class.getName(), args ) );
         trans.commit();
-    }
-
-    private void showDialog( DialogFragment _dlgFrg ) {
-        if( _dlgFrg != null ) {
-            DialogFragment dialogFragment = (DialogFragment) _dlgFrg;
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            // Ensure that there's only one dialog to the user.
-            Fragment prev = getSupportFragmentManager().findFragmentByTag( DLG );
-            if( prev != null ) {
-                ft.remove( prev );
-            }
-            try {
-                dialogFragment.show( ft, DLG );
-            }
-            catch( Exception _e ) {
-            }
-        }
     }
 
     @Override
@@ -101,8 +92,8 @@ public final class ChatRoom extends FragmentActivity implements OnChatLineListen
     public void onSendLine( String _line ) {
         try {
             if( !TextUtils.isEmpty( _line ) ) {
-                Toast.makeText( getApplicationContext(), _line, Toast.LENGTH_LONG ).show();
-                mLines.addLine( new ChatLine( _line ) );
+                mLines.addLine( new ChatLine( getString( R.string.chat_from_me ), _line ) );
+                OnAddLine();
             }
         }
         catch( Exception _e ) {
@@ -112,4 +103,13 @@ public final class ChatRoom extends FragmentActivity implements OnChatLineListen
         }
     }
 
+    private void OnAddLine() {
+        if( mOnAddLine != null ) {
+            mOnAddLine.onAddLine( mLines );
+        }
+    }
+
+    public void setOnAddLineListener( OnAddLineListener _onAddLine ) {
+        mOnAddLine = _onAddLine;
+    }
 }

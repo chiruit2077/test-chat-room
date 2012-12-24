@@ -3,6 +3,7 @@ package com.example.testchatroom.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,9 +14,10 @@ import android.widget.TextView;
 import com.example.testchatroom.R;
 
 public final class ChatSend extends Fragment {
-    private OnChatLineListener mOnSend;
+    public static final String     KEY_YOUR_NAME = "Your name";
+    private OnChatLineSentListener mOnSend;
 
-    public interface OnChatLineListener {
+    public interface OnChatLineSentListener {
         void onSendLine( String _line );
     }
 
@@ -36,8 +38,18 @@ public final class ChatSend extends Fragment {
                 onSendMessage( tvLines.getText().toString().trim() );
             }
         } );
-        v = null;
         btnSend = null;
+
+        Bundle data = getArguments();
+        String name = data.getString( KEY_YOUR_NAME );
+        TextView tvYourName = (TextView) v.findViewById( R.id.tv_your_name );
+        if( !TextUtils.isEmpty( name ) ) {
+            tvYourName.setText( String.format( getString( R.string.chat_name_say ), name ) );
+        }
+        data = null;
+        name = null;
+        tvYourName = null;
+        v = null;
     }
 
     private void onSendMessage( String _msg ) {
@@ -50,11 +62,12 @@ public final class ChatSend extends Fragment {
     public void onAttach( Activity _activity ) {
         super.onAttach( _activity );
         // don't use try-catch , I am sure.
-        mOnSend = (OnChatLineListener) _activity;
+        mOnSend = (OnChatLineSentListener) _activity;
     }
 
     @Override
     public void onDetach() {
+        super.onDetach();
         mOnSend = null;
     }
 }

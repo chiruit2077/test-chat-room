@@ -3,20 +3,37 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <EditText
-        android:id="@+id/et_chat_text"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:layout_toLeftOf="@+id/btn_send"
-        android:layout_centerVertical="true"
-        android:inputType="textMultiLine" />
-
-    <Button
-        android:id="@+id/btn_send"
+    <TextView
+        android:id="@+id/tv_your_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="@string/chat_button_send" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/chat_you_say"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tv_your_name" >
+
+        <EditText
+            android:id="@+id/et_chat_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_send"
+            android:hint="@string/chat_you_say"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/chat_button_send" />
+    </RelativeLayout>
 
 </RelativeLayout>

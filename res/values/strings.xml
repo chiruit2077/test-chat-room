@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Test Chat Room</string>  
+    <string name="app_name">Test Chat Room</string>
     <string name="chat_button_send">Send</string>
+    <string name="chat_you_say">You say</string>
+    <string name="chat_name_say"><Data><![CDATA[%1$s say:]]></Data></string>
+    <string name="chat_use_name">Use name</string>
+    <string name="chat_from_me"><Data>Me: </Data></string>
 
 </resources>

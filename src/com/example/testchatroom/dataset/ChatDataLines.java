@@ -20,4 +20,16 @@ public final class ChatDataLines {
         finally {
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder outputBuilder = new StringBuilder();
+        for( ChatLine line : mLines ) {
+            outputBuilder
+                    .append( line.getName() )
+                    .append( line.toString() )
+                    .append( '\n' );
+        }
+        return outputBuilder.toString();
+    }
 }
