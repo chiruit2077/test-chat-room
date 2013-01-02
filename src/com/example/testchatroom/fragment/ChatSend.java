@@ -56,6 +56,8 @@ public final class ChatSend extends Fragment {
         if( mOnSend != null ) {
             mOnSend.onSendLine( _msg );
         }
+        final TextView tvLines = (TextView) getView().findViewById( R.id.et_chat_text );
+        tvLines.setText( "" );
     }
 
     @Override

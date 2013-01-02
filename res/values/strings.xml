@@ -7,5 +7,7 @@
     <string name="chat_name_say"><Data><![CDATA[%1$s say:]]></Data></string>
     <string name="chat_use_name">Use name</string>
     <string name="chat_from_me"><Data>Me: </Data></string>
-
+    <string name="chat_registering"><Data>Registering...</Data></string>
+	<string name="chat_registered">You have registered!</string>
+	<string name="chat_unregistered">You have unregistered!</string>
 </resources>
