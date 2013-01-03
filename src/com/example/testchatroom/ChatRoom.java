@@ -12,80 +12,30 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.testchatroom.dataset.ChatDataLines;
-import com.example.testchatroom.dataset.ChatLine;
+import com.example.testchatroom.dataset.ChatContext;
 import com.example.testchatroom.fragment.ChatBaseDialog;
 import com.example.testchatroom.fragment.ChatInputName;
 import com.example.testchatroom.fragment.ChatInputName.OnInputName;
 import com.example.testchatroom.fragment.ChatLines;
 import com.example.testchatroom.fragment.ChatSend;
-import com.example.testchatroom.fragment.ChatSend.OnChatLineSentListener;
 import com.google.android.gcm.GCMRegistrar;
 
-public final class ChatRoom extends FragmentActivity implements OnChatLineSentListener, OnInputName {
+public final class ChatRoom extends FragmentActivity implements OnInputName {
     public static final String TAG        = "TEST-CHAT-ROOM";
     // public static final String KEY_RESTORED_LINES = "Restored Lines";
-    private ChatDataLines      mLines     = new ChatDataLines();
-    public static String       sUserName;
+
     private ProgressDialog     mIndicator;
     private BroadcastReceiver  mReg       = new BroadcastReceiver() {
                                               @Override
                                               public void onReceive( final Context _context, Intent _intent ) {
-
                                                   Toast.makeText( _context, "reg", Toast.LENGTH_LONG ).show();
-                                                  mConn = new Util.Connector( getApplicationContext() ) {
-                                                      @Override
-                                                      protected String onCookie() {
-                                                          return "user=" + sUserName + ";regid=" + GCMRegistrar.getRegistrationId( _context );
-                                                      }
-
-                                                      @Override
-                                                      protected int onSetConnectTimeout() {
-                                                          return 10 * 1000;
-                                                      }
-
-                                                      @Override
-                                                      protected void onConnectorInvalidConnect( Exception _e ) {
-                                                          super.onConnectorInvalidConnect( _e );
-                                                          onErr();
-                                                      }
-
-                                                      @Override
-                                                      protected void onConnectorError( int _status ) {
-                                                          super.onConnectorError( _status );
-                                                          onErr();
-                                                      }
-
-                                                      protected void onConnectorConnectTimout() {
-                                                          super.onConnectorConnectTimout();
-                                                          onErr();
-                                                      }
-
-                                                      private void onErr() {
-                                                          mIndicator.dismiss();
-                                                      };
-
-                                                      @Override
-                                                      protected void onConnectorFinished() {
-                                                          mIndicator.dismiss();
-                                                      }
-                                                  };
-                                                  mConn.submit( API.REG );
+                                                  notifyServer( _context );
                                               }
                                           };
     private IntentFilter       mFilterReg = new IntentFilter( ACTION_REGISTERED_ID );
-
-    private Util.Connector     mConn;
-
-    public interface OnAddLineListener {
-        void onAddLine( ChatDataLines _lines );
-    }
-
-    private OnAddLineListener mOnAddLine;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -103,7 +53,6 @@ public final class ChatRoom extends FragmentActivity implements OnChatLineSentLi
 
     @Override
     public void onInputName( String _name ) {
-        sUserName = _name;
         mIndicator = ProgressDialog.show( this, "", getString( R.string.chat_registering ) );
         init( this, _name );
     }
@@ -155,31 +104,6 @@ public final class ChatRoom extends FragmentActivity implements OnChatLineSentLi
         }
     }
 
-    @Override
-    public void onSendLine( String _line ) {
-        try {
-            if( !TextUtils.isEmpty( _line ) ) {
-                mLines.addLine( new ChatLine( getString( R.string.chat_from_me ), _line ) );
-                onAddLine();
-            }
-        }
-        catch( Exception _e ) {
-            Log.e( TAG, _e.getMessage() );
-        }
-        finally {
-        }
-    }
-
-    private void onAddLine() {
-        if( mOnAddLine != null ) {
-            mOnAddLine.onAddLine( mLines );
-        }
-    }
-
-    public void setOnAddLineListener( OnAddLineListener _onAddLine ) {
-        mOnAddLine = _onAddLine;
-    }
-
     public void unregister() {
         String regId = null;
         Context cxt = getApplicationContext();
@@ -202,5 +126,47 @@ public final class ChatRoom extends FragmentActivity implements OnChatLineSentLi
             regId = null;
             cxt = null;
         }
+    }
+
+    private void notifyServer( final Context _context ) {
+        Util.Connector conn = new Util.Connector( getApplicationContext() ) {
+            @Override
+            protected String onCookie() {
+                return "user=" + ChatContext.getInstance( _context ).getUseName() + ";regid=" + GCMRegistrar.getRegistrationId( _context );
+            }
+
+            @Override
+            protected int onSetConnectTimeout() {
+                return 10 * 1000;
+            }
+
+            @Override
+            protected void onConnectorInvalidConnect( Exception _e ) {
+                super.onConnectorInvalidConnect( _e );
+                onErr();
+            }
+
+            @Override
+            protected void onConnectorError( int _status ) {
+                super.onConnectorError( _status );
+                onErr();
+            }
+
+            protected void onConnectorConnectTimout() {
+                super.onConnectorConnectTimout();
+                onErr();
+            }
+
+            private void onErr() {
+                mIndicator.dismiss();
+            };
+
+            @Override
+            protected void onConnectorFinished() {
+                mIndicator.dismiss();
+            }
+        };
+        conn.submit( API.REG );
+        conn = null;
     }
 }

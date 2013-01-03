@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.testchatroom.ChatRoom;
 import com.example.testchatroom.R;
+import com.example.testchatroom.dataset.ChatContext;
 import com.google.android.gcm.GCMRegistrar;
 
 public final class ChatInputName extends ChatBaseDialog implements OnClickListener {
@@ -55,7 +56,10 @@ public final class ChatInputName extends ChatBaseDialog implements OnClickListen
     private void onInputName() {
         TextView tv = (TextView) getView().findViewById( R.id.et_your_name );
         if( mOnInputName != null ) {
-            mOnInputName.onInputName( tv.getText().toString().trim() );
+            String n = tv.getText().toString().trim();
+            ChatContext.getInstance( getActivity().getApplicationContext() ).setUseName( n );
+            mOnInputName.onInputName( n );
+            n = null;
         }
         register();
         tv = null;

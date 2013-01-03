@@ -1,6 +1,6 @@
 package com.example.testchatroom.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -11,15 +11,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.testchatroom.API;
 import com.example.testchatroom.R;
+import com.example.testchatroom.Util;
+import com.example.testchatroom.dataset.ChatContext;
+import com.google.android.gcm.GCMRegistrar;
 
 public final class ChatSend extends Fragment {
-    public static final String     KEY_YOUR_NAME = "Your name";
-    private OnChatLineSentListener mOnSend;
-
-    public interface OnChatLineSentListener {
-        void onSendLine( String _line );
-    }
+    public static final String KEY_YOUR_NAME = "Your name";
 
     @Override
     public View onCreateView( LayoutInflater _inflater, ViewGroup _container, Bundle _savedInstanceState ) {
@@ -44,7 +43,7 @@ public final class ChatSend extends Fragment {
         String name = data.getString( KEY_YOUR_NAME );
         TextView tvYourName = (TextView) v.findViewById( R.id.tv_your_name );
         if( !TextUtils.isEmpty( name ) ) {
-            tvYourName.setText( String.format( getString( R.string.chat_name_say ), name ) );
+            tvYourName.setText( String.format( getString( R.string.chat_name_say ), name, "" ) );
         }
         data = null;
         name = null;
@@ -53,23 +52,49 @@ public final class ChatSend extends Fragment {
     }
 
     private void onSendMessage( String _msg ) {
-        if( mOnSend != null ) {
-            mOnSend.onSendLine( _msg );
-        }
         final TextView tvLines = (TextView) getView().findViewById( R.id.et_chat_text );
         tvLines.setText( "" );
+        notifyServer( getActivity().getApplicationContext(), _msg );
     }
 
-    @Override
-    public void onAttach( Activity _activity ) {
-        super.onAttach( _activity );
-        // don't use try-catch , I am sure.
-        mOnSend = (OnChatLineSentListener) _activity;
-    }
+    private void notifyServer( final Context _cxt, final String _msg ) {
+        Util.Connector conn = new Util.Connector( _cxt ) {
+            @Override
+            protected String onSetBody() {
+                return _msg;
+            }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mOnSend = null;
+            @Override
+            protected String onCookie() {
+                return "user=" + ChatContext.getInstance( _cxt ).getUseName() + ";regid=" + GCMRegistrar.getRegistrationId( _cxt );
+            }
+
+            @Override
+            protected int onSetConnectTimeout() {
+                return 10 * 1000;
+            }
+
+            @Override
+            protected void onConnectorInvalidConnect( Exception _e ) {
+                super.onConnectorInvalidConnect( _e );
+                onErr();
+            }
+
+            @Override
+            protected void onConnectorError( int _status ) {
+                super.onConnectorError( _status );
+                onErr();
+            }
+
+            protected void onConnectorConnectTimout() {
+                super.onConnectorConnectTimout();
+                onErr();
+            }
+
+            private void onErr() {
+            };
+        };
+        conn.submit( API.SEND );
+        conn = null;
     }
 }

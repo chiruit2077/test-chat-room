@@ -26,8 +26,7 @@ public final class ChatDataLines {
         StringBuilder outputBuilder = new StringBuilder();
         for( ChatLine line : mLines ) {
             outputBuilder
-                    .append( line.getName() )
-                    .append( line.toString() )
+                    .append( String.format( ChatContext.getInstance().getTemplate(), line.getName(), line.toString() ) )
                     .append( '\n' );
         }
         return outputBuilder.toString();

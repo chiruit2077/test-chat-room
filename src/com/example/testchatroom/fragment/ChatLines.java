@@ -1,8 +1,15 @@
 package com.example.testchatroom.fragment;
 
+import static com.example.testchatroom.GCMIntentService.ACTION_MESSAGE_COMING;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +17,36 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.testchatroom.ChatRoom;
-import com.example.testchatroom.ChatRoom.OnAddLineListener;
 import com.example.testchatroom.R;
+import com.example.testchatroom.dataset.ChatContext;
 import com.example.testchatroom.dataset.ChatDataLines;
+import com.example.testchatroom.dataset.ChatLine;
 
-public final class ChatLines extends Fragment implements OnAddLineListener {
+public final class ChatLines extends Fragment {
+    private BroadcastReceiver mMsgCom       = new BroadcastReceiver() {
+                                                @Override
+                                                public void onReceive( final Context _context, Intent _intent ) {
+                                                    onSendLine( _intent.getStringExtra( "sender" ), _intent.getStringExtra( "msg" ) );
+                                                }
+                                            };
+    private IntentFilter      mFilterMsgCom = new IntentFilter( ACTION_MESSAGE_COMING );
+
+    public void onSendLine( String _sender, String _line ) {
+        try {
+            Context cxt = getActivity().getApplicationContext();
+            if( !TextUtils.isEmpty( _line ) ) {
+                ChatContext.getInstance( cxt ).getLines().addLine( new ChatLine( _sender, _line ) );
+                onAddLine( ChatContext.getInstance( cxt ).getLines() );
+            }
+            cxt = null;
+        }
+        catch( Exception _e ) {
+            Log.e( ChatRoom.TAG, _e.getMessage() );
+        }
+        finally {
+        }
+    }
+
     @Override
     public View onCreateView( LayoutInflater _inflater, ViewGroup _container, Bundle _savedInstanceState ) {
         return _inflater.inflate( R.layout.chat_lines, _container, false );
@@ -24,18 +56,15 @@ public final class ChatLines extends Fragment implements OnAddLineListener {
     public void onAttach( Activity _activity ) {
         super.onAttach( _activity );
         // I am sure!
-        ChatRoom room = (ChatRoom) getActivity();
-        room.setOnAddLineListener( this );
+        _activity.registerReceiver( mMsgCom, mFilterMsgCom );
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        ChatRoom room = (ChatRoom) getActivity();
-        room.setOnAddLineListener( null );
+        getActivity().unregisterReceiver( mMsgCom );
     }
 
-    @Override
     public void onAddLine( ChatDataLines _lines ) {
         View v = getView();
         TextView tvLines = (TextView) v.findViewById( R.id.tv_chat_lines );

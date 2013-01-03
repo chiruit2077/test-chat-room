@@ -34,12 +34,12 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f040000;
         public static final int chat_button_send=0x7f040001;
-        public static final int chat_from_me=0x7f040005;
+        public static final int chat_name_said=0x7f040004;
         public static final int chat_name_say=0x7f040003;
         public static final int chat_registered=0x7f040007;
         public static final int chat_registering=0x7f040006;
         public static final int chat_unregistered=0x7f040008;
-        public static final int chat_use_name=0x7f040004;
+        public static final int chat_use_name=0x7f040005;
         public static final int chat_you_say=0x7f040002;
     }
     public static final class style {

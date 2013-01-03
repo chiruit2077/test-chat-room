@@ -2,14 +2,12 @@ package com.example.testchatroom;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.example.testchatroom.dataset.ChatContext;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -20,58 +18,14 @@ public class GCMIntentService extends GCMBaseIntentService {
     public static final String ACTION_MESSAGE_COMING  = "action.message_coming";
     private static final int   NOTIFY_REGISTERED      = 0;
 
-    private BroadcastReceiver  mUnReg                 = new BroadcastReceiver() {
-                                                          @Override
-                                                          public void onReceive( final Context _context, Intent _intent ) {
-                                                              Toast.makeText( _context, "unreg", Toast.LENGTH_LONG ).show();
-                                                              mConn = new Util.Connector( getApplicationContext() ) {
-                                                                  @Override
-                                                                  protected String onCookie() {
-                                                                      return "user=" + ChatRoom.sUserName + ";regid=" + GCMRegistrar.getRegistrationId( _context );
-                                                                  }
-
-                                                                  @Override
-                                                                  protected int onSetConnectTimeout() {
-                                                                      return 10 * 1000;
-                                                                  }
-
-                                                                  @Override
-                                                                  protected void onConnectorInvalidConnect( Exception _e ) {
-                                                                      super.onConnectorInvalidConnect( _e );
-                                                                      onErr();
-                                                                  }
-
-                                                                  @Override
-                                                                  protected void onConnectorError( int _status ) {
-                                                                      super.onConnectorError( _status );
-                                                                      onErr();
-                                                                  }
-
-                                                                  protected void onConnectorConnectTimout() {
-                                                                      super.onConnectorConnectTimout();
-                                                                      onErr();
-                                                                  }
-
-                                                                  private void onErr() {
-                                                                  };
-                                                              };
-                                                              mConn.submit( API.UNREG );
-                                                          }
-                                                      };
-    private IntentFilter       mFilterUnreg           = new IntentFilter( ACTION_UNREGISTERED_ID );
-
-    private Util.Connector     mConn;
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver( mUnReg );
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        registerReceiver( mUnReg, mFilterUnreg );
     }
 
     public GCMIntentService() {
@@ -85,7 +39,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     @Override
     protected void onMessage( Context _arg0, Intent _arg1 ) {
-        // notify( _arg0, ACTION_MESSAGE_COMING, _arg1.getStringExtra( "title" ), _arg1.getStringExtra( "content" ) );
+        Intent i = new Intent( ACTION_MESSAGE_COMING );
+        i.putExtra( "sender", _arg1.getStringExtra( "sender" ) );
+        i.putExtra( "msg", _arg1.getStringExtra( "msg" ) );
+        sendBroadcast( i );
     }
 
     @Override
@@ -99,7 +56,44 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onUnregistered( Context _arg0, String _arg1 ) {
         notify( _arg0, getString( R.string.chat_unregistered ) );
         sendBroadcast( new Intent( ACTION_UNREGISTERED_ID ) );
+        notifyServer( _arg0 );
         GCMRegistrar.setRegisteredOnServer( _arg0, false );
+    }
+
+    private void notifyServer( final Context _cxt ) {
+        Util.Connector conn = new Util.Connector( _cxt ) {
+            @Override
+            protected String onCookie() {
+                return "user=" + ChatContext.getInstance( _cxt ).getUseName() + ";regid=" + GCMRegistrar.getRegistrationId( _cxt );
+            }
+
+            @Override
+            protected int onSetConnectTimeout() {
+                return 10 * 1000;
+            }
+
+            @Override
+            protected void onConnectorInvalidConnect( Exception _e ) {
+                super.onConnectorInvalidConnect( _e );
+                onErr();
+            }
+
+            @Override
+            protected void onConnectorError( int _status ) {
+                super.onConnectorError( _status );
+                onErr();
+            }
+
+            protected void onConnectorConnectTimout() {
+                super.onConnectorConnectTimout();
+                onErr();
+            }
+
+            private void onErr() {
+            };
+        };
+        conn.submit( API.UNREG );
+        conn = null;
     }
 
     private static void notify( Context _context, String _title ) {
