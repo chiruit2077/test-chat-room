@@ -1,6 +1,6 @@
-package com.example.testchatroom.fragment;
+package com.gmail.hasszhao.chatroom.fragment;
 
-import static com.example.testchatroom.GCMIntentService.ACTION_MESSAGE_COMING;
+import static com.gmail.hasszhao.chatroom.GCMIntentService.ACTION_MESSAGE_COMING;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.example.testchatroom.ChatRoom;
-import com.example.testchatroom.R;
-import com.example.testchatroom.dataset.ChatContext;
-import com.example.testchatroom.dataset.ChatDataLines;
-import com.example.testchatroom.dataset.ChatLine;
+import com.gmail.hasszhao.chatroom.ChatRoom;
+import com.gmail.hasszhao.chatroom.R;
+import com.gmail.hasszhao.chatroom.dataset.ChatContext;
+import com.gmail.hasszhao.chatroom.dataset.ChatDataLines;
+import com.gmail.hasszhao.chatroom.dataset.ChatLine;
 
 public final class ChatLines extends Fragment {
     private BroadcastReceiver mMsgCom       = new BroadcastReceiver() {

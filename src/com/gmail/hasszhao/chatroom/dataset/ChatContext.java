@@ -1,8 +1,8 @@
-package com.example.testchatroom.dataset;
+package com.gmail.hasszhao.chatroom.dataset;
 
 import android.content.Context;
 
-import com.example.testchatroom.R;
+import com.gmail.hasszhao.chatroom.R;
 
 public final class ChatContext {
     private static ChatContext sInstance;

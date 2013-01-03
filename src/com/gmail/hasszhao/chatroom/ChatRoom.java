@@ -1,6 +1,6 @@
-package com.example.testchatroom;
+package com.gmail.hasszhao.chatroom;
 
-import static com.example.testchatroom.GCMIntentService.ACTION_REGISTERED_ID;
+import static com.gmail.hasszhao.chatroom.GCMIntentService.ACTION_REGISTERED_ID;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,12 +15,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.testchatroom.dataset.ChatContext;
-import com.example.testchatroom.fragment.ChatBaseDialog;
-import com.example.testchatroom.fragment.ChatInputName;
-import com.example.testchatroom.fragment.ChatInputName.OnInputName;
-import com.example.testchatroom.fragment.ChatLines;
-import com.example.testchatroom.fragment.ChatSend;
+import com.gmail.hasszhao.chatroom.dataset.ChatContext;
+import com.gmail.hasszhao.chatroom.fragment.ChatBaseDialog;
+import com.gmail.hasszhao.chatroom.fragment.ChatInputName;
+import com.gmail.hasszhao.chatroom.fragment.ChatInputName.OnInputName;
+import com.gmail.hasszhao.chatroom.fragment.ChatLines;
+import com.gmail.hasszhao.chatroom.fragment.ChatSend;
 import com.google.android.gcm.GCMRegistrar;
 
 public final class ChatRoom extends FragmentActivity implements OnInputName {
@@ -137,7 +137,7 @@ public final class ChatRoom extends FragmentActivity implements OnInputName {
 
             @Override
             protected int onSetConnectTimeout() {
-                return 10 * 1000;
+                return (int) API.TIME_OUT;
             }
 
             @Override

@@ -1,4 +1,4 @@
-package com.example.testchatroom;
+package com.gmail.hasszhao.chatroom;
 
 import java.io.BufferedReader;
 import java.io.IOException;

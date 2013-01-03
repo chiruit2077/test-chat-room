@@ -1,4 +1,4 @@
-package com.example.testchatroom;
+package com.gmail.hasszhao.chatroom;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.testchatroom.dataset.ChatContext;
+import com.gmail.hasszhao.chatroom.dataset.ChatContext;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -69,7 +69,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
             @Override
             protected int onSetConnectTimeout() {
-                return 10 * 1000;
+                return (int) API.TIME_OUT;
             }
 
             @Override

@@ -1,4 +1,4 @@
-package com.example.testchatroom.dataset;
+package com.gmail.hasszhao.chatroom.dataset;
 
 public final class ChatLine {
     // private byte[] data;

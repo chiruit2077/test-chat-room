@@ -1,4 +1,4 @@
-package com.example.testchatroom;
+package com.gmail.hasszhao.chatroom;
 
 import java.io.IOException;
 import java.net.CookieHandler;

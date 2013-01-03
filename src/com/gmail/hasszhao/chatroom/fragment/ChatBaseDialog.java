@@ -1,4 +1,4 @@
-package com.example.testchatroom.fragment;
+package com.gmail.hasszhao.chatroom.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.example.testchatroom.R;
+import com.gmail.hasszhao.chatroom.R;
 
 public abstract class ChatBaseDialog extends DialogFragment {
     private static final String DLG = "TEST-CHAT-ROOM-DLG";
