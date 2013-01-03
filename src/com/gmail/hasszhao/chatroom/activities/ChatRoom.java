@@ -1,4 +1,4 @@
-package com.gmail.hasszhao.chatroom;
+package com.gmail.hasszhao.chatroom.activities;
 
 import static com.gmail.hasszhao.chatroom.GCMIntentService.ACTION_REGISTERED_ID;
 import static com.gmail.hasszhao.chatroom.GCMIntentService.ACTION_UNREGISTERED_ID;
@@ -19,6 +19,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.gmail.hasszhao.chatroom.API;
+import com.gmail.hasszhao.chatroom.R;
+import com.gmail.hasszhao.chatroom.Util;
 import com.gmail.hasszhao.chatroom.dataset.ChatContext;
 import com.gmail.hasszhao.chatroom.fragment.ChatBaseDialog;
 import com.gmail.hasszhao.chatroom.fragment.ChatInputName;
@@ -28,7 +32,7 @@ import com.gmail.hasszhao.chatroom.fragment.ChatSend;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
 
-public final class ChatRoom extends FragmentActivity implements OnInputName {
+public final class ChatRoom extends SherlockFragmentActivity implements OnInputName {
     public static final String TAG          = "TEST-CHAT-ROOM";
     // public static final String KEY_RESTORED_LINES = "Restored Lines";
     private ProgressDialog     mIndicator;
@@ -188,18 +192,18 @@ public final class ChatRoom extends FragmentActivity implements OnInputName {
              * Read data here. The function runs in thread. To hook on UI thread use onConnectorFinished()
              */
             protected void onConnectorInputStream( InputStream _in ) {
-                super.onConnectorInputStream( _in );
                 final String json = Util.streamToString( _in );
                 Gson gson = new Gson();
-                com.gmail.hasszhao.chatroom.dataset.Status status = gson.fromJson( json, com.gmail.hasszhao.chatroom.dataset.Status.class );
-                if( API.API_OK == status.getCode() ) {
-                    ChatRoom.this.runOnUiThread( new Runnable() {
-                        @Override
-                        public void run() {
+                final com.gmail.hasszhao.chatroom.dataset.Status status = gson.fromJson( json, com.gmail.hasszhao.chatroom.dataset.Status.class );
+                ChatRoom.this.runOnUiThread( new Runnable() {
+                    @Override
+                    public void run() {
+                        if( API.API_OK == status.getCode() ) {
                             Toast.makeText( getApplicationContext(), "...", Toast.LENGTH_SHORT ).show();
                         }
-                    } );
-                }
+                    }
+                } );
+                gson = null;
             }
         };
         conn.submit( _api );

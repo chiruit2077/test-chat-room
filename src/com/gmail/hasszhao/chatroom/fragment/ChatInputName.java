@@ -1,6 +1,5 @@
 package com.gmail.hasszhao.chatroom.fragment;
 
-import static com.gmail.hasszhao.chatroom.GCMIntentService.PRJ_ID;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmail.hasszhao.chatroom.ChatRoom;
+import com.gmail.hasszhao.chatroom.GCMIntentService;
 import com.gmail.hasszhao.chatroom.R;
 import com.gmail.hasszhao.chatroom.dataset.ChatContext;
 import com.google.android.gcm.GCMRegistrar;
@@ -84,7 +84,7 @@ public final class ChatInputName extends ChatBaseDialog implements OnClickListen
             GCMRegistrar.checkManifest( cxt );
             regId = GCMRegistrar.getRegistrationId( cxt );
             if( regId.equals( "" ) ) {
-                GCMRegistrar.register( cxt, PRJ_ID );
+                GCMRegistrar.register( cxt, GCMIntentService.PRJ_ID );
             }
             else {
                 // Device is already registered on GCM, check server.

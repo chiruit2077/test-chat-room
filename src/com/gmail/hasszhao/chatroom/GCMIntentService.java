@@ -70,7 +70,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                     .setAutoCancel( true )
                     .setOnlyAlertOnce( true )
                     .setSmallIcon( R.drawable.ic_launcher )
-                    .build();
+                    .getNotification();
             notificationManager.notify( NOTIFY_REGISTERED, notification );
         }
         catch( Exception _e ) {
