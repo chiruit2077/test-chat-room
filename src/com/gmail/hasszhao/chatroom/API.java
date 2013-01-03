@@ -6,4 +6,5 @@ public interface API {
     public static final String REG      = HOST + "/msgreg";
     public static final String UNREG    = HOST + "/msgunreg";
     public static final String SEND     = HOST + "/msgcm";
+    public static final int    API_OK   = 900;
 }

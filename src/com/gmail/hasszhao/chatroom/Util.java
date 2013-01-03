@@ -42,10 +42,11 @@ public final class Util {
     }
 
     public static class Connector extends AsyncTask<String, Object, Object> {
-        private static final int DEFAULT_CNN_TIME_OUT = 1000 * 20;
-        private static String    USER_AGENT;
-        private String           mUrl;
-        private byte[]           mBody;
+        private static final int    DEFAULT_CNN_TIME_OUT = 1000 * 20;
+        private static String       USER_AGENT;
+        private static final Object LOCK                 = new Object();
+        private String              mUrl;
+        private byte[]              mBody;
 
         public Connector( Context _cxt ) {
             super();
@@ -68,7 +69,7 @@ public final class Util {
             Object ret = null;
             HttpURLConnection conn = null;
             try {
-                synchronized( Connector.class ) {
+                synchronized( LOCK ) {
                     InputStream in = null;
                     conn = connect( mUrl );
                     // if we don't do conn.setRequestProperty( "Accept-Encoding", "gzip" ), the wrapper GZIPInputStream can be removed.
@@ -302,5 +303,36 @@ public final class Util {
         if( content != null )
             return content.toString();
         return null;
+    }
+
+    public static String readAssetsFile( Context _cxt, String _path ) {
+        InputStream input = null;
+        String text = null;
+        byte[] buffer = null;
+        try {
+            input = _cxt.getAssets().open( _path );
+            int size = input.available();
+            buffer = new byte[size];
+            input.read( buffer );
+            text = new String( buffer );
+        }
+        catch( Exception _e ) {
+            Log.e( TAG, "Error while reading file: " + _e.getMessage() );
+        }
+        finally {
+            if( input != null ) {
+                try {
+                    input.close();
+                }
+                catch( IOException _e ) {
+                    Log.e( TAG, "Error while closing: " + _e.getMessage() );
+                }
+                finally {
+                    input = null;
+                }
+            }
+            buffer = null;
+        }
+        return text;
     }
 }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.gmail.hasszhao.chatroom.dataset.ChatContext;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -49,51 +48,14 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onRegistered( Context _arg0, String _arg1 ) {
         notify( _arg0, getString( R.string.chat_registered ) );
         GCMRegistrar.setRegisteredOnServer( _arg0, true );
-        sendBroadcast( new Intent( ACTION_REGISTERED_ID ) );
+        sendBroadcast( new Intent( ACTION_REGISTERED_ID ) );// must after upon
     }
 
     @Override
     protected void onUnregistered( Context _arg0, String _arg1 ) {
         notify( _arg0, getString( R.string.chat_unregistered ) );
-        sendBroadcast( new Intent( ACTION_UNREGISTERED_ID ) );
-        notifyServer( _arg0 );
         GCMRegistrar.setRegisteredOnServer( _arg0, false );
-    }
-
-    private void notifyServer( final Context _cxt ) {
-        Util.Connector conn = new Util.Connector( _cxt ) {
-            @Override
-            protected String onCookie() {
-                return "user=" + ChatContext.getInstance( _cxt ).getUseName() + ";regid=" + GCMRegistrar.getRegistrationId( _cxt );
-            }
-
-            @Override
-            protected int onSetConnectTimeout() {
-                return (int) API.TIME_OUT;
-            }
-
-            @Override
-            protected void onConnectorInvalidConnect( Exception _e ) {
-                super.onConnectorInvalidConnect( _e );
-                onErr();
-            }
-
-            @Override
-            protected void onConnectorError( int _status ) {
-                super.onConnectorError( _status );
-                onErr();
-            }
-
-            protected void onConnectorConnectTimout() {
-                super.onConnectorConnectTimout();
-                onErr();
-            }
-
-            private void onErr() {
-            };
-        };
-        conn.submit( API.UNREG );
-        conn = null;
+        sendBroadcast( new Intent( ACTION_UNREGISTERED_ID ) );// must after upon
     }
 
     private static void notify( Context _context, String _title ) {
