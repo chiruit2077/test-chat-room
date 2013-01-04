@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
         android:text="@string/chat_you_say"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -23,6 +24,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/btn_send"
             android:hint="@string/chat_you_say"
             android:inputType="textMultiLine" />
