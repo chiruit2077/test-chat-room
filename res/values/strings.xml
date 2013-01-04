@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Test Chat Room</string>
+    <string name="app_name">Chat Room</string>
     <string name="chat_button_send">Send</string>
     <string name="chat_you_say">You say</string>
     <string name="chat_name_say"><Data>%1$s say: %2$s</Data></string>
@@ -13,4 +13,7 @@
     <string name="chat_registered">You have registered!</string>
     <string name="chat_unregistered">You have unregistered!</string>
 	<string name="chat_duplicated_name"><Data>\"%1$s\" has been registered!</Data></string>
+	<string name="chat_retry"><Data>Try Again</Data></string>
+	<string name="chat_plz_register"><Data>Chat Name</Data></string>
+		<string name="chat_exit_app"><Data>Exit</Data></string>
 </resources>

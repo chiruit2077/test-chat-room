@@ -19,6 +19,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.gmail.hasszhao.chatroom.API;
 import com.gmail.hasszhao.chatroom.R;
 import com.gmail.hasszhao.chatroom.Util;
@@ -68,7 +70,16 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         setContentView( R.layout.chat_room );
         registerReceiver( mReg, mFilterReg );
         registerReceiver( mUnreg, mFilterUnreg );
-        ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatInputName.class.getName() ) );
+        registerPushOrInit();
+    }
+
+    private void registerPushOrInit() {
+        Context cxt = getApplicationContext();
+        if( !GCMRegistrar.isRegistered( cxt ) && GCMRegistrar.getRegistrationId( cxt ).equals( "" ) ) {
+            ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( cxt, ChatInputName.class.getName() ) );
+        } else {
+            init( this );
+        }
     }
 
     @Override
@@ -79,12 +90,12 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
     }
 
     @Override
-    public void onInputName( String _name ) {
+    public void onInputName() {
         mIndicator = ProgressDialog.show( this, "", getString( R.string.chat_registering ) );
-        init( this, _name );
+        init( this );
     }
 
-    private static void init( ChatRoom _chatRoom, String _name ) {
+    private static void init( ChatRoom _chatRoom ) {
         Context cxt = _chatRoom.getApplicationContext();
         FragmentManager fm = _chatRoom.getSupportFragmentManager();
         try {
@@ -116,14 +127,9 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         trans.commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        mIndicator = ProgressDialog.show( this, "", getString( R.string.chat_unregistering ) );
-        exitChat();
-    }
-
     private void exitChat() {
         try {
+            mIndicator = ProgressDialog.show( this, "", getString( R.string.chat_unregistering ) );
             unregister();
         }
         catch( Exception _e ) {
@@ -131,6 +137,11 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         }
         finally {
         }
+    }
+
+    private void terminate() {
+        ChatContext.getInstance( getApplicationContext() ).clearAll();
+        ChatRoom.this.finish();
     }
 
     public void unregister() {
@@ -196,7 +207,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
             protected void onConnectorFinished() {
                 mIndicator.dismiss();
                 if( _isUnregistered ) {
-                    ChatRoom.this.finish();
+                    terminate();
                 }
             }
 
@@ -210,13 +221,16 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
                 ChatRoom.this.runOnUiThread( new Runnable() {
                     @Override
                     public void run() {
+                        ChatContext ccxt = ChatContext.getInstance( _context );
                         switch( status.getCode() )
                         {
                             case API.API_OK:
+                                if( !_isUnregistered ) {
+                                    ccxt.saveUseName();
+                                }
                                 Toast.makeText( getApplicationContext(), "...", Toast.LENGTH_SHORT ).show();
                             break;
                             case API.API_DUPLICATED_NAME:
-                                ChatContext ccxt = ChatContext.getInstance( _context );
                                 ccxt.setWrongUseName( ccxt.getUseName() );
                                 ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatReInputName.class.getName() ) );
                                 ccxt = null;
@@ -229,5 +243,22 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         };
         conn.submit( _api );
         conn = null;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu( Menu _menu ) {
+        getSupportMenuInflater().inflate( R.menu.main, _menu );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected( MenuItem _item ) {
+        switch( _item.getItemId() )
+        {
+            case R.id.menu_exit:
+                exitChat();
+            break;
+        }
+        return true;
     }
 }

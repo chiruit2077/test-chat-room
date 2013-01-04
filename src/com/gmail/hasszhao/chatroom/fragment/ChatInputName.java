@@ -21,6 +21,12 @@ public final class ChatInputName extends ChatBaseInputName implements OnClickLis
     }
 
     @Override
+    public void onActivityCreated( Bundle _arg0 ) {
+        super.onActivityCreated( _arg0 );
+        getDialog().setTitle( getString( R.string.chat_plz_register ) );
+    }
+
+    @Override
     protected void doCommand() {
         register();
     }

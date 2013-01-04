@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_margin="5dp"
         android:text="@string/chat_duplicated_name"
-        android:textColor="@color/abs__holo_blue_light" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
         android:id="@+id/et_your_name"

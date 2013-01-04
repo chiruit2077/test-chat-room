@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.gmail.hasszhao.chatroom.R;
 
 public abstract class ChatBaseDialog extends SherlockDialogFragment {
     private static final String DLG = "TEST-CHAT-ROOM-DLG";
@@ -16,7 +15,6 @@ public abstract class ChatBaseDialog extends SherlockDialogFragment {
     public void onCreate( Bundle _savedInstanceState ) {
         super.onCreate( _savedInstanceState );
         setCancelable( false );
-        setStyle( SherlockDialogFragment.STYLE_NO_TITLE, R.style.Theme_Dialog_Translucent );
     }
 
     /*

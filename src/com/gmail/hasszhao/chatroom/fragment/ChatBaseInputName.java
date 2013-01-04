@@ -14,7 +14,7 @@ public abstract class ChatBaseInputName extends ChatBaseDialog implements OnClic
     private OnInputName mOnInputName;
 
     public interface OnInputName {
-        void onInputName( String _name );
+        void onInputName();
     }
 
     @Override
@@ -43,10 +43,8 @@ public abstract class ChatBaseInputName extends ChatBaseDialog implements OnClic
     private void onInputName() {
         TextView tv = (TextView) getView().findViewById( R.id.et_your_name );
         if( mOnInputName != null ) {
-            String n = tv.getText().toString().trim();
-            ChatContext.getInstance( getActivity().getApplicationContext() ).setUseName( n );
-            mOnInputName.onInputName( n );
-            n = null;
+            ChatContext.getInstance( getActivity().getApplicationContext() ).setUseName( tv.getText().toString().trim() );
+            mOnInputName.onInputName();
         }
         doCommand();
         tv = null;

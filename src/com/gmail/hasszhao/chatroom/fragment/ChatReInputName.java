@@ -26,6 +26,7 @@ public final class ChatReInputName extends ChatBaseInputName implements OnClickL
         final TextView tvDupName = (TextView) getView().findViewById( R.id.tv_duplicated_name );
         tvDupName.setText( String.format( cxt.getString( R.string.chat_duplicated_name ), ChatContext.getInstance( cxt ).getWrongUseName() ) );
         cxt = null;
+        getDialog().setTitle( getString( R.string.chat_retry ) );
     }
 
     @Override
