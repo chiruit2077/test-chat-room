@@ -12,8 +12,12 @@
     <string name="chat_retry"><Data>Retry...</Data></string>
     <string name="chat_registered">You have registered!</string>
     <string name="chat_unregistered">You have unregistered!</string>
-	<string name="chat_duplicated_name"><Data>\"%1$s\" has been registered!</Data></string>
-	<string name="chat_retry"><Data>Try Again</Data></string>
-	<string name="chat_plz_register"><Data>Chat Name</Data></string>
-		<string name="chat_exit_app"><Data>Exit</Data></string>
+    <string name="chat_duplicated_name"><Data>\"%1$s\" has been registered!</Data></string>
+    <string name="chat_retry"><Data>Try Again</Data></string>
+    <string name="chat_plz_register"><Data>Chat Name</Data></string>
+    <string name="chat_smile"><Data>:-)</Data></string>
+    <string name="chat_load_history"><Data>Load History?</Data></string>
+    <string name="chat_yes">Yes</string>
+    <string name="chat_exit_app">Exit</string>
+
 </resources>

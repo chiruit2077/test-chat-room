@@ -29,6 +29,7 @@ import com.gmail.hasszhao.chatroom.fragment.ChatBaseDialog;
 import com.gmail.hasszhao.chatroom.fragment.ChatBaseInputName.OnInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatLines;
+import com.gmail.hasszhao.chatroom.fragment.ChatLoadHistory;
 import com.gmail.hasszhao.chatroom.fragment.ChatReInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatSend;
 import com.google.android.gcm.GCMRegistrar;
@@ -64,6 +65,12 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
     private IntentFilter       mFilterUnreg     = new IntentFilter( ACTION_UNREGISTERED_ID );
     private volatile boolean   mCanNotifyServer = false;
 
+    public interface OnLoadHistoryListener {
+        void onLoadHistory();
+    }
+
+    private OnLoadHistoryListener mOnLoadHistoryListener;
+
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
@@ -79,6 +86,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
             ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( cxt, ChatInputName.class.getName() ) );
         } else {
             init( this );
+            initFinished( getApplicationContext() );
         }
     }
 
@@ -99,6 +107,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         Context cxt = _chatRoom.getApplicationContext();
         FragmentManager fm = _chatRoom.getSupportFragmentManager();
         try {
+
             initChatLines( cxt, fm );
             initChatSend( cxt, fm );
             synchronized( _chatRoom ) {
@@ -113,6 +122,15 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
             cxt = null;
             fm = null;
         }
+    }
+
+    private void initFinished( Context _context, ChatContext ccxt ) {
+        ccxt.saveUseName();
+        ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( _context, ChatLoadHistory.class.getName() ) );
+    }
+
+    private void initFinished( Context _context ) {
+        ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( _context, ChatLoadHistory.class.getName() ) );
     }
 
     private static void initChatLines( Context _cxt, FragmentManager _fm ) {
@@ -226,7 +244,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
                         {
                             case API.API_OK:
                                 if( !_isUnregistered ) {
-                                    ccxt.saveUseName();
+                                    initFinished( _context, ccxt );
                                 }
                                 Toast.makeText( getApplicationContext(), "...", Toast.LENGTH_SHORT ).show();
                             break;
@@ -251,6 +269,12 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         return true;
     }
 
+    public void loadHistory() {
+        if( mOnLoadHistoryListener != null ) {
+            mOnLoadHistoryListener.onLoadHistory();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected( MenuItem _item ) {
         switch( _item.getItemId() )
@@ -261,4 +285,9 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         }
         return true;
     }
+
+    public void setOnLoadHistoryListener( OnLoadHistoryListener _onLoadHistoryListener ) {
+        mOnLoadHistoryListener = _onLoadHistoryListener;
+    }
+
 }
