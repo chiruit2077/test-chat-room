@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
         android:text="@string/chat_duplicated_name"
         android:textColor="@color/abs__holo_blue_light" />
 
@@ -18,6 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tv_duplicated_name"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:hint="@string/chat_use_name" />
 
     <Button
@@ -27,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/et_your_name"
+        android:layout_margin="5dp"
         android:text="@string/chat_use_name" />
 
 </RelativeLayout>

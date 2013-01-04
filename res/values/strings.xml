@@ -12,5 +12,5 @@
     <string name="chat_retry"><Data>Retry...</Data></string>
     <string name="chat_registered">You have registered!</string>
     <string name="chat_unregistered">You have unregistered!</string>
-	<string name="chat_duplicated_name"><Data>"%1$s" has been registered!</Data></string>
+	<string name="chat_duplicated_name"><Data>\"%1$s\" has been registered!</Data></string>
 </resources>
