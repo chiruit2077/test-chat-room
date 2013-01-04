@@ -18,7 +18,6 @@ import com.gmail.hasszhao.chatroom.dataset.ChatContext;
 import com.google.android.gcm.GCMRegistrar;
 
 public final class ChatSend extends Fragment {
-    public static final String KEY_YOUR_NAME = "Your name";
 
     @Override
     public View onCreateView( LayoutInflater _inflater, ViewGroup _container, Bundle _savedInstanceState ) {
@@ -39,13 +38,11 @@ public final class ChatSend extends Fragment {
         } );
         btnSend = null;
 
-        Bundle data = getArguments();
-        String name = data.getString( KEY_YOUR_NAME );
+        String name = ChatContext.getInstance( getActivity().getApplicationContext() ).getUseName();
         TextView tvYourName = (TextView) v.findViewById( R.id.tv_your_name );
         if( !TextUtils.isEmpty( name ) ) {
             tvYourName.setText( String.format( getString( R.string.chat_name_say ), name, "" ) );
         }
-        data = null;
         name = null;
         tvYourName = null;
         v = null;

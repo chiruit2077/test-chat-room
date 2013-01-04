@@ -5,7 +5,7 @@ import java.util.List;
 
 import android.util.Log;
 
-import com.gmail.hasszhao.chatroom.ChatRoom;
+import com.gmail.hasszhao.chatroom.activities.ChatRoom;
 
 public final class ChatDataLines {
     private List<ChatLine> mLines = new ArrayList<ChatLine>();

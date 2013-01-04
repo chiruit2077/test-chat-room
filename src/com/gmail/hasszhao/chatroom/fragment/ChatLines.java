@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.gmail.hasszhao.chatroom.ChatRoom;
 import com.gmail.hasszhao.chatroom.R;
+import com.gmail.hasszhao.chatroom.activities.ChatRoom;
 import com.gmail.hasszhao.chatroom.dataset.ChatContext;
 import com.gmail.hasszhao.chatroom.dataset.ChatDataLines;
 import com.gmail.hasszhao.chatroom.dataset.ChatLine;

@@ -6,6 +6,7 @@ import com.gmail.hasszhao.chatroom.R;
 
 public final class ChatContext {
     private static ChatContext sInstance;
+    private String             mWrongUseName;
     private String             mUseName;
     private ChatDataLines      mLines = new ChatDataLines(); ;
     private String             mTemplate;
@@ -42,5 +43,13 @@ public final class ChatContext {
 
     String getTemplate() {
         return mTemplate;
+    }
+
+    public String getWrongUseName() {
+        return mWrongUseName;
+    }
+
+    public void setWrongUseName( String _wrongUseName ) {
+        mWrongUseName = _wrongUseName;
     }
 }

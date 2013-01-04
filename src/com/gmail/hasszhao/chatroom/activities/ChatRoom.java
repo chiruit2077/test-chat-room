@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -25,32 +24,43 @@ import com.gmail.hasszhao.chatroom.R;
 import com.gmail.hasszhao.chatroom.Util;
 import com.gmail.hasszhao.chatroom.dataset.ChatContext;
 import com.gmail.hasszhao.chatroom.fragment.ChatBaseDialog;
+import com.gmail.hasszhao.chatroom.fragment.ChatBaseInputName.OnInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatInputName;
-import com.gmail.hasszhao.chatroom.fragment.ChatInputName.OnInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatLines;
+import com.gmail.hasszhao.chatroom.fragment.ChatReInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatSend;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
 
 public final class ChatRoom extends SherlockFragmentActivity implements OnInputName {
-    public static final String TAG          = "TEST-CHAT-ROOM";
+    public static final String TAG              = "TEST-CHAT-ROOM";
     // public static final String KEY_RESTORED_LINES = "Restored Lines";
     private ProgressDialog     mIndicator;
-    private BroadcastReceiver  mReg         = new BroadcastReceiver() {
-                                                @Override
-                                                public void onReceive( final Context _context, Intent _intent ) {
-                                                    notifyServer( false, _context, API.REG );
-                                                }
-                                            };
-    private IntentFilter       mFilterReg   = new IntentFilter( ACTION_REGISTERED_ID );
+    private BroadcastReceiver  mReg             = new BroadcastReceiver() {
+                                                    @Override
+                                                    public void onReceive( final Context _context, Intent _intent ) {
+                                                        synchronized( ChatRoom.this ) {
+                                                            while( !mCanNotifyServer ) {
+                                                                try {
+                                                                    ChatRoom.this.wait();
+                                                                }
+                                                                catch( InterruptedException _e ) {
+                                                                }
+                                                            }
+                                                            notifyServer( false, _context, API.REG );
+                                                        }
+                                                    }
+                                                };
+    private IntentFilter       mFilterReg       = new IntentFilter( ACTION_REGISTERED_ID );
 
-    private BroadcastReceiver  mUnreg       = new BroadcastReceiver() {
-                                                @Override
-                                                public void onReceive( Context _context, Intent _intent ) {
-                                                    notifyServer( true, _context, API.UNREG );
-                                                }
-                                            };
-    private IntentFilter       mFilterUnreg = new IntentFilter( ACTION_UNREGISTERED_ID );
+    private BroadcastReceiver  mUnreg           = new BroadcastReceiver() {
+                                                    @Override
+                                                    public void onReceive( Context _context, Intent _intent ) {
+                                                        notifyServer( true, _context, API.UNREG );
+                                                    }
+                                                };
+    private IntentFilter       mFilterUnreg     = new IntentFilter( ACTION_UNREGISTERED_ID );
+    private volatile boolean   mCanNotifyServer = false;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -74,12 +84,16 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         init( this, _name );
     }
 
-    private static void init( FragmentActivity _activity, String _name ) {
-        Context cxt = _activity.getApplicationContext();
-        FragmentManager fm = _activity.getSupportFragmentManager();
+    private static void init( ChatRoom _chatRoom, String _name ) {
+        Context cxt = _chatRoom.getApplicationContext();
+        FragmentManager fm = _chatRoom.getSupportFragmentManager();
         try {
             initChatLines( cxt, fm );
-            initChatSend( cxt, fm, _name );
+            initChatSend( cxt, fm );
+            synchronized( _chatRoom ) {
+                _chatRoom.mCanNotifyServer = true;
+                _chatRoom.notify();
+            }
         }
         catch( Exception _e ) {
             Log.e( TAG, _e.getMessage() );
@@ -96,11 +110,9 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         trans.commit();
     }
 
-    private static void initChatSend( Context _cxt, FragmentManager _fm, String _name ) {
-        Bundle args = new Bundle();
-        args.putString( ChatSend.KEY_YOUR_NAME, _name );
+    private static void initChatSend( Context _cxt, FragmentManager _fm ) {
         FragmentTransaction trans = _fm.beginTransaction();
-        trans.replace( R.id.chat_send_container, Fragment.instantiate( _cxt, ChatSend.class.getName(), args ) );
+        trans.replace( R.id.chat_send_container, Fragment.instantiate( _cxt, ChatSend.class.getName() ) );
         trans.commit();
     }
 
@@ -145,7 +157,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
         }
     }
 
-    private void notifyServer( final boolean _isUnregistered, final Context _context, final String _api ) {
+    public void notifyServer( final boolean _isUnregistered, final Context _context, final String _api ) {
         Util.Connector conn = new Util.Connector( getApplicationContext() ) {
             @Override
             protected String onCookie() {
@@ -198,8 +210,17 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
                 ChatRoom.this.runOnUiThread( new Runnable() {
                     @Override
                     public void run() {
-                        if( API.API_OK == status.getCode() ) {
-                            Toast.makeText( getApplicationContext(), "...", Toast.LENGTH_SHORT ).show();
+                        switch( status.getCode() )
+                        {
+                            case API.API_OK:
+                                Toast.makeText( getApplicationContext(), "...", Toast.LENGTH_SHORT ).show();
+                            break;
+                            case API.API_DUPLICATED_NAME:
+                                ChatContext ccxt = ChatContext.getInstance( _context );
+                                ccxt.setWrongUseName( ccxt.getUseName() );
+                                ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatReInputName.class.getName() ) );
+                                ccxt = null;
+                            break;
                         }
                     }
                 } );
