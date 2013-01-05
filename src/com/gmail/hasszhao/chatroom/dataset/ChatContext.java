@@ -16,6 +16,7 @@ public final class ChatContext extends SharedPreferenceWrapper {
     public void clearAll() {
         mWrongUseName = null;
         mUseName = null;
+        mLines.clear();
         mLines = null;
         mTemplate = null;
         saveUseName();

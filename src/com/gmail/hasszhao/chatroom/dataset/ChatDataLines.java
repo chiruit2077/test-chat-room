@@ -31,4 +31,13 @@ public final class ChatDataLines {
         }
         return outputBuilder.toString();
     }
+
+    public void removeAll() {
+        mLines.clear();
+    }
+
+    void clear() {
+        removeAll();
+        mLines = null;
+    }
 }

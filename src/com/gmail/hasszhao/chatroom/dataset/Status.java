@@ -1,15 +1,16 @@
 package com.gmail.hasszhao.chatroom.dataset;
 
 public final class Status {
-    private int     Code;
-    private String  Message;
-    private boolean Retry;
 
-    public Status( int _code, String _message, boolean _retry ) {
+    private int    Code;
+    private String Message;
+    private String Data;
+
+    public Status( int _code, String _message, String _data ) {
         super();
         Code = _code;
         Message = _message;
-        Retry = _retry;
+        Data = _data;
     }
 
     public int getCode() {
@@ -20,7 +21,7 @@ public final class Status {
         return Message;
     }
 
-    public boolean isRetry() {
-        return Retry;
+    public String getData() {
+        return Data;
     }
 }
