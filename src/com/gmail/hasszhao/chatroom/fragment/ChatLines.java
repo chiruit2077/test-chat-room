@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.gmail.hasszhao.chatroom.API;
@@ -101,13 +100,13 @@ public final class ChatLines extends Fragment implements OnClickListener {
         tvLines.setText( "" );
         tvLines.setText( _lines.toString() );
 
-        final ScrollView svLines = (ScrollView) v.findViewById( R.id.sv_chat_lines );
-        svLines.post( new Runnable() {
-            @Override
-            public void run() {
-                svLines.fullScroll( ScrollView.FOCUS_DOWN );
-            }
-        } );
+        // final ScrollView svLines = (ScrollView) v.findViewById( R.id.sv_chat_lines );
+        // svLines.post( new Runnable() {
+        // @Override
+        // public void run() {
+        // svLines.fullScroll( ScrollView.FOCUS_DOWN );
+        // }
+        // } );
         tvLines = null;
     }
 

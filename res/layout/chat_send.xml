@@ -29,6 +29,16 @@
             android:hint="@string/chat_you_say"
             android:inputType="textMultiLine" />
 
+        <ProgressBar
+            android:id="@+id/pb_sending"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/chat_button_send"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"
