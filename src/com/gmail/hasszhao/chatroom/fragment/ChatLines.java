@@ -133,6 +133,7 @@ public final class ChatLines extends Fragment implements OnClickListener {
             }
 
             private void onErr() {
+                mLoadingHistory.setVisibility( View.GONE );
             };
 
             @Override
