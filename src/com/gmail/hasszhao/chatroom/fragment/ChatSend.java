@@ -1,9 +1,14 @@
 package com.gmail.hasszhao.chatroom.fragment;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Locale;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.gmail.hasszhao.chatroom.API;
@@ -23,9 +27,10 @@ import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
 
 public final class ChatSend extends Fragment implements OnClickListener {
-    private View     mSend;
-    private View     mSending;
-    private TextView mMsgLines;
+    private static final int REQUEST_CODE_VOICE_RECOGNITION = 0x01;
+    private View             mSend;
+    private View             mSending;
+    private TextView         mMsgLines;
 
     @Override
     public View onCreateView( LayoutInflater _inflater, ViewGroup _container, Bundle _savedInstanceState ) {
@@ -38,7 +43,8 @@ public final class ChatSend extends Fragment implements OnClickListener {
         View v = getView();
         mMsgLines = (TextView) v.findViewById( R.id.et_chat_text );
         mSending = v.findViewById( R.id.pb_sending );
-        mSend = (Button) v.findViewById( R.id.btn_send );
+        mSending.setVisibility( View.GONE );
+        mSend = v.findViewById( R.id.btn_send );
         mSend.setOnClickListener( this );
 
         String name = ChatContext.getInstance( getActivity().getApplicationContext() ).getUseName();
@@ -46,6 +52,8 @@ public final class ChatSend extends Fragment implements OnClickListener {
         if( !TextUtils.isEmpty( name ) ) {
             tvYourName.setText( String.format( getString( R.string.chat_name_say ), name, "" ) );
         }
+        v.findViewById( R.id.btn_send_voice ).setOnClickListener( this );
+
         name = null;
         tvYourName = null;
         v = null;
@@ -139,6 +147,33 @@ public final class ChatSend extends Fragment implements OnClickListener {
             case R.id.btn_send:
                 onSendMessage( mMsgLines.getText().toString().trim() );
             break;
+            case R.id.btn_send_voice:
+                startVoiceRecognitionActivity();
+            break;
         }
+    }
+
+    private void startVoiceRecognitionActivity() {
+        Intent intent = new Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH );
+        intent.putExtra( RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName() );
+        intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM );
+        intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE, Locale.GERMAN.toString() );
+        intent.putExtra( RecognizerIntent.EXTRA_MAX_RESULTS, 10 );
+        this.startActivityForResult( intent, REQUEST_CODE_VOICE_RECOGNITION );
+    }
+
+    @Override
+    public void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        if( requestCode == REQUEST_CODE_VOICE_RECOGNITION && resultCode == Activity.RESULT_OK ) {
+            ArrayList<String> matches = data
+                    .getStringArrayListExtra( RecognizerIntent.EXTRA_RESULTS );
+            if( matches != null && matches.size() > 0 ) {
+                String match = matches.get( 0 );
+                mMsgLines.setText( match );
+
+            }
+        }
+        super.onActivityResult( requestCode, resultCode, data );
     }
 }

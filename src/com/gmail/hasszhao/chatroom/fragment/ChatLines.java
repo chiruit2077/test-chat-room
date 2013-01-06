@@ -73,8 +73,8 @@ public final class ChatLines extends Fragment implements OnClickListener {
         super.onActivityCreated( _savedInstanceState );
         View v = getView();
         mLoadHistory = (Button) v.findViewById( R.id.btn_load_history );
-        mLoadingHistory = v.findViewById( R.id.pb_loading_history );
         mLoadHistory.setOnClickListener( this );
+        mLoadingHistory = v.findViewById( R.id.pb_loading_history );
         v = null;
     }
 
@@ -99,14 +99,6 @@ public final class ChatLines extends Fragment implements OnClickListener {
         TextView tvLines = (TextView) v.findViewById( R.id.tv_chat_lines );
         tvLines.setText( "" );
         tvLines.setText( _lines.toString() );
-
-        // final ScrollView svLines = (ScrollView) v.findViewById( R.id.sv_chat_lines );
-        // svLines.post( new Runnable() {
-        // @Override
-        // public void run() {
-        // svLines.fullScroll( ScrollView.FOCUS_DOWN );
-        // }
-        // } );
         tvLines = null;
     }
 

@@ -5,17 +5,18 @@ import static com.gmail.hasszhao.chatroom.GCMIntentService.ACTION_UNREGISTERED_I
 
 import java.io.InputStream;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -31,13 +32,14 @@ import com.gmail.hasszhao.chatroom.fragment.ChatInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatLines;
 import com.gmail.hasszhao.chatroom.fragment.ChatReInputName;
 import com.gmail.hasszhao.chatroom.fragment.ChatSend;
+import com.gmail.hasszhao.chatroom.fragment.ChatSignal;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.gson.Gson;
 
 public final class ChatRoom extends SherlockFragmentActivity implements OnInputName {
     public static final String TAG              = "TEST-CHAT-ROOM";
     // public static final String KEY_RESTORED_LINES = "Restored Lines";
-    private ProgressDialog     mIndicator;
+    private DialogFragment     mIndicator;
     private BroadcastReceiver  mReg             = new BroadcastReceiver() {
                                                     @Override
                                                     public void onReceive( final Context _context, Intent _intent ) {
@@ -92,7 +94,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
 
     @Override
     public void onInputName() {
-        mIndicator = ProgressDialog.show( this, "", getString( R.string.chat_registering ) );
+        ChatBaseDialog.showOneDialog( getSupportFragmentManager(), mIndicator = (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatSignal.class.getName() ) );
         init( this );
     }
 
@@ -138,7 +140,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
 
     private void exitChat() {
         try {
-            mIndicator = ProgressDialog.show( this, "", getString( R.string.chat_unregistering ) );
+            ChatBaseDialog.showOneDialog( getSupportFragmentManager(), mIndicator = (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatSignal.class.getName() ) );
             unregister();
         }
         catch( Exception _e ) {
@@ -208,7 +210,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
 
             private void onErr() {
                 mIndicator.dismiss();
-                mIndicator = ProgressDialog.show( ChatRoom.this, "", getString( R.string.chat_retry ) );
+                ChatBaseDialog.showOneDialog( getSupportFragmentManager(), mIndicator = (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatSignal.class.getName() ) );
                 notifyServer( _isUnregistered, _context, _api );
             };
 
@@ -268,5 +270,20 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
             break;
         }
         return true;
+    }
+
+    /*
+     * To see overflow always. Suggestion from http://stackoverflow.com/questions/13179620/force-overflow-menu-in-actionbarsherlock/13180285#13180285
+     */
+    @Override
+    public boolean onKeyUp( int keyCode, KeyEvent event ) {
+        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ) {
+            if( event.getAction() == KeyEvent.ACTION_UP &&
+                    keyCode == KeyEvent.KEYCODE_MENU ) {
+                openOptionsMenu();
+                return true;
+            }
+        }
+        return super.onKeyUp( keyCode, event );
     }
 }

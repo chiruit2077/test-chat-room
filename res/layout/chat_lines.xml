@@ -4,44 +4,20 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <!--
-    <ScrollView
-        android:id="@+id/sv_chat_lines"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/btn_load_history"
-        android:fadingEdge="none" >
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"  >
-
-            <TextView
-                android:id="@+id/tv_chat_lines"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" android:gravity="left|bottom"
-                android:layout_alignParentLeft="true" android:layout_alignParentBottom="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:lineSpacingExtra="10dp" />
-        </RelativeLayout>
-    </ScrollView>
-    -->
-
     <TextView
         android:id="@+id/tv_chat_lines"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" android:scrollHorizontally="true"
-        android:layout_marginTop="5dp" android:scrollbars="vertical|horizontal"
-        android:gravity="left|bottom"  
         android:layout_above="@+id/btn_load_history"
+        android:layout_alignParentLeft="true"
         android:layout_marginBottom="5dp"
-        android:lineSpacingExtra="10dp" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="left|bottom"
+        android:lineSpacingExtra="10dp"
+        android:scrollHorizontally="true"
+        android:scrollbars="vertical|horizontal" />
 
     <Button
         android:id="@+id/btn_load_history"
@@ -52,14 +28,16 @@
         android:text="@string/chat_load_history"
         android:visibility="visible" />
 
-    <ProgressBar
+    <com.gmail.hasszhao.chatroom.views.ChatSignalView
         android:id="@+id/pb_loading_history"
-        style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/btn_load_history"
         android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/anim_signal"
         android:visibility="gone" />
 
 </RelativeLayout>

@@ -4,16 +4,16 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="ChatRoomBaseTheme" parent="Theme.Sherlock.Light">
+    <style name="ChatRoomBaseTheme" parent="android:style/Theme.Holo.Light">
 
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
-        <item name="actionBarStyle">@style/ChatRoom.Widget.Holo.Light.ActionBar</item>
-        <item name="popupMenuStyle">@style/ChatRoom.Widget.Light.PopupMenu</item>
-        <item name="actionOverflowButtonStyle">@style/ChatRoom.Widget.Light.ActionButton.Overflow</item>
+        <item name="android:actionBarStyle">@style/ChatRoom.Widget.Holo.Light.ActionBar</item>
+        <item name="android:popupMenuStyle">@style/ChatRoom.Widget.Light.PopupMenu</item>
+        <item name="android:actionOverflowButtonStyle">@style/ChatRoom.Widget.Light.ActionButton.Overflow</item>
     </style>
 
     <!-- Application theme. -->
@@ -21,11 +21,11 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <style name="ChatRoom.Widget.Holo.Light.ActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid">
+    <style name="ChatRoom.Widget.Holo.Light.ActionBar" parent="android:style/Widget.Holo.ActionBar">
         <item name="background">@android:color/white</item>
     </style>
 
-    <style name="ChatRoom.Widget.Light.ActionButton.Overflow" parent="Widget.Sherlock.ActionButton.Overflow">
+    <style name="ChatRoom.Widget.Light.ActionButton.Overflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
         <item name="android:src">@drawable/menu_moreoverflow</item>
     </style>
 

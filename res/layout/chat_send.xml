@@ -29,22 +29,37 @@
             android:hint="@string/chat_you_say"
             android:inputType="textMultiLine" />
 
-        <ProgressBar
+        <com.gmail.hasszhao.chatroom.views.ChatSignalView
             android:id="@+id/pb_sending"
-            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/anim_signal"
             android:text="@string/chat_button_send"
             android:visibility="gone" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_send_voice"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/btn_send"
+            android:text="@string/chat_button_send" />
+
+        <ImageButton
+            android:id="@+id/btn_send_voice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/btn_voice_input"
             android:text="@string/chat_button_send" />
     </RelativeLayout>
 

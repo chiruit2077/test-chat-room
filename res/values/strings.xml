@@ -6,9 +6,7 @@
     <string name="chat_you_say">You say</string>
     <string name="chat_name_say"><Data>%1$s say: %2$s</Data></string>
     <string name="chat_name_said"><Data>%1$s said: %2$s</Data></string>
-    <string name="chat_use_name">Use name</string>
-    <string name="chat_registering"><Data>Registering...</Data></string>
-    <string name="chat_unregistering"><Data>Unregistering...</Data></string>
+    <string name="chat_use_name">Use name</string> 
     <string name="chat_retry"><Data>Retry...</Data></string>
     <string name="chat_registered">You have registered!</string>
     <string name="chat_unregistered">You have unregistered!</string>
