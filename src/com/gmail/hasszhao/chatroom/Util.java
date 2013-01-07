@@ -368,18 +368,29 @@ public final class Util {
         return name;
     }
 
-    public static String[] generateRandomWords( int numberOfWords )
-    {
-        String[] randomStrings = new String[numberOfWords];
-        Random random = new Random();
-        for( int i = 0; i < numberOfWords; i++ )
-        {
-            char[] word = new char[random.nextInt( 8 ) + 3]; // words of length 3 through 10. (1 and 2 letter words are boring.)
-            for( int j = 0; j < word.length; j++ )
-            {
-                word[j] = (char) ('a' + random.nextInt( 26 ));
+    /*
+     * http://stackoverflow.com/a/4952066/1835650
+     */
+    public static String[] generateRandomWords( int _numberOfWords ) {
+        String[] randomStrings = null;
+        Random random = null;
+        try {
+            random = new Random();
+            randomStrings = new String[_numberOfWords];
+            for( int i = 0; i < _numberOfWords; i++ ) {
+                char[] word = new char[random.nextInt( 8 ) + 3]; // words of length 3 through 10. (1 and 2 letter words are boring.)
+                for( int j = 0; j < word.length; j++ ) {
+                    word[j] = (char) ('a' + random.nextInt( 26 ));
+                }
+                randomStrings[i] = new String( word );
             }
-            randomStrings[i] = new String( word );
+        }
+        catch( Exception _e ) {
+            randomStrings = null;
+            Log.e( TAG, "Error in generateRandomWords: " + _e.getMessage() );
+        }
+        finally {
+            random = null;
         }
         return randomStrings;
     }

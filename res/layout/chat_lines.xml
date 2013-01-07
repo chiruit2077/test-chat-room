@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
+    <EditText
         android:id="@+id/tv_chat_lines"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -14,10 +14,16 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
+        android:background="@android:color/transparent"
+        android:cursorVisible="false"
+        android:editable="false" 
+        android:ellipsize="end"
         android:gravity="left|bottom"
+        android:inputType="textMultiLine|textNoSuggestions"
         android:lineSpacingExtra="10dp"
         android:scrollHorizontally="true"
-        android:scrollbars="vertical|horizontal" />
+        android:scrollbars="vertical"
+        android:textSize="13sp" />
 
     <Button
         android:id="@+id/btn_load_history"
