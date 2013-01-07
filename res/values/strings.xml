@@ -4,7 +4,7 @@
     <string name="app_name">Chat Room</string>
     <string name="chat_button_send">Send</string>
     <string name="chat_you_say">You say</string>
-    <string name="chat_name_say"><Data>%1$s say: %2$s</Data></string>
+    <string name="chat_name_say"><Data>%1$s :%2$s</Data></string>
     <string name="chat_name_said"><Data>%1$s said: %2$s</Data></string>
     <string name="chat_use_name">Use name</string> 
     <string name="chat_retry"><Data>Retry...</Data></string>

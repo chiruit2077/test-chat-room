@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.gmail.hasszhao.chatroom.GCMIntentService;
 import com.gmail.hasszhao.chatroom.R;
+import com.gmail.hasszhao.chatroom.Util;
 import com.gmail.hasszhao.chatroom.activities.ChatRoom;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -24,6 +26,8 @@ public final class ChatInputName extends ChatBaseInputName implements OnClickLis
     public void onActivityCreated( Bundle _arg0 ) {
         super.onActivityCreated( _arg0 );
         getDialog().setTitle( getString( R.string.chat_plz_register ) );
+        final EditText yourName = (EditText) getView().findViewById( R.id.et_your_name );
+        yourName.setText( Util.getGmailNameBeforeAt( getActivity().getApplicationContext() ) );
     }
 
     @Override

@@ -137,18 +137,23 @@ public final class ChatLines extends Fragment implements OnClickListener {
             };
 
             @Override
+            protected void onConnectorFinished() {
+                mLoadingHistory.setVisibility( View.GONE );
+            }
+
+            @Override
             protected void onConnectorInputStream( InputStream _in ) {
                 final String json = Util.streamToString( _in );
                 Gson gson = new Gson();
                 try {
                     final com.gmail.hasszhao.chatroom.dataset.Status status = gson.fromJson( json, com.gmail.hasszhao.chatroom.dataset.Status.class );
-                    switch( status.getCode() )
-                    {
-                        case API.API_OK:
-                            final ChatTexts cts = gson.fromJson( status.getData(), ChatTexts.class );
-                            getActivity().runOnUiThread( new Runnable() {
-                                @Override
-                                public void run() {
+                    final ChatTexts cts = gson.fromJson( status.getData(), ChatTexts.class );
+                    getActivity().runOnUiThread( new Runnable() {
+                        @Override
+                        public void run() {
+                            switch( status.getCode() )
+                            {
+                                case API.API_OK:
                                     ChatContext.getInstance( _cxt ).getLines().removeAll();
                                     ChatText[] data = cts.getTexts();
                                     if( data != null && data.length > 0 ) {
@@ -157,16 +162,16 @@ public final class ChatLines extends Fragment implements OnClickListener {
                                         }
                                     }
                                     data = null;
-                                }
-                            } );
-                        break;
-                        case API.API_ACTION_FAILED:
-                            mLoadHistory.setVisibility( View.VISIBLE );
-                        break;
-                        case API.API_NIL_MESSAGES:
-                        break;
-                    }
-                    mLoadingHistory.setVisibility( View.GONE );
+
+                                break;
+                                case API.API_ACTION_FAILED:
+                                    mLoadHistory.setVisibility( View.VISIBLE );
+                                break;
+                                case API.API_NIL_MESSAGES:
+                                break;
+                            }
+                        }
+                    } );
                 }
                 catch( Exception _e ) {
                     Log.e( ChatRoom.TAG, _e.getMessage() );

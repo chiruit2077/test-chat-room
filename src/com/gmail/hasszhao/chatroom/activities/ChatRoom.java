@@ -94,7 +94,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
 
     @Override
     public void onInputName() {
-        ChatBaseDialog.showOneDialog( getSupportFragmentManager(), mIndicator = (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatSignal.class.getName() ) );
+        openIndicator();
         init( this );
     }
 
@@ -140,7 +140,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
 
     private void exitChat() {
         try {
-            ChatBaseDialog.showOneDialog( getSupportFragmentManager(), mIndicator = (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatSignal.class.getName() ) );
+            openIndicator();
             unregister();
         }
         catch( Exception _e ) {
@@ -181,6 +181,8 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
 
     public void notifyServer( final boolean _isUnregistered, final Context _context, final String _api ) {
         Util.Connector conn = new Util.Connector( getApplicationContext() ) {
+            private boolean mReplaced = false;
+
             @Override
             protected String onCookie() {
                 return "user=" + ChatContext.getInstance( _context ).getUseName() + ";regid=" + GCMRegistrar.getRegistrationId( _context );
@@ -209,14 +211,17 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
             }
 
             private void onErr() {
-                mIndicator.dismiss();
-                ChatBaseDialog.showOneDialog( getSupportFragmentManager(), mIndicator = (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatSignal.class.getName() ) );
+                closeIndicator();
+                openIndicator();
                 notifyServer( _isUnregistered, _context, _api );
             };
 
             @Override
             protected void onConnectorFinished() {
-                mIndicator.dismiss();
+                if( !mReplaced ) {
+                    // For reason that another dialog-fragment will be shown can remove the old one internal.
+                    closeIndicator();
+                }
                 if( _isUnregistered ) {
                     terminate();
                 }
@@ -244,6 +249,7 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
                                 ccxt.setWrongUseName( ccxt.getUseName() );
                                 ChatBaseDialog.showOneDialog( getSupportFragmentManager(), (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatReInputName.class.getName() ) );
                                 ccxt = null;
+                                mReplaced = true;
                             break;
                         }
                     }
@@ -285,5 +291,15 @@ public final class ChatRoom extends SherlockFragmentActivity implements OnInputN
             }
         }
         return super.onKeyUp( keyCode, event );
+    }
+
+    private void closeIndicator() {
+        if( mIndicator != null ) {
+            mIndicator.dismiss();
+        }
+    }
+
+    private void openIndicator() {
+        ChatBaseDialog.showOneDialog( getSupportFragmentManager(), mIndicator = (DialogFragment) Fragment.instantiate( getApplicationContext(), ChatSignal.class.getName() ) );
     }
 }

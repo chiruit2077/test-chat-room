@@ -10,11 +10,14 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
+import java.util.Random;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
@@ -334,5 +337,50 @@ public final class Util {
             buffer = null;
         }
         return text;
+    }
+
+    private static final String GACCOUNT = "com.google";
+
+    public static String getGmailNameBeforeAt( Context _context ) {
+        AccountManager am = null;
+        Account[] accounts = null;
+        String email = null;
+        String name = null;
+        try {
+            am = AccountManager.get( _context.getApplicationContext() );
+            accounts = am.getAccountsByType( GACCOUNT );
+            if( accounts != null && accounts.length > 0 ) {
+                email = accounts[0].name;
+            }
+            String[] strs = email.split( "@" );
+            if( strs.length > 0 ) {
+                name = strs[0];
+            }
+        }
+        catch( Exception _e ) {
+            Log.e( TAG, "Error in getGmailNameBeforeAt: " + _e.getMessage() );
+        }
+        finally {
+            am = null;
+            accounts = null;
+            email = null;
+        }
+        return name;
+    }
+
+    public static String[] generateRandomWords( int numberOfWords )
+    {
+        String[] randomStrings = new String[numberOfWords];
+        Random random = new Random();
+        for( int i = 0; i < numberOfWords; i++ )
+        {
+            char[] word = new char[random.nextInt( 8 ) + 3]; // words of length 3 through 10. (1 and 2 letter words are boring.)
+            for( int j = 0; j < word.length; j++ )
+            {
+                word[j] = (char) ('a' + random.nextInt( 26 ));
+            }
+            randomStrings[i] = new String( word );
+        }
+        return randomStrings;
     }
 }

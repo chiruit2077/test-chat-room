@@ -158,7 +158,7 @@ public final class ChatSend extends Fragment implements OnClickListener {
         intent.putExtra( RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName() );
         intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM );
-        intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE, Locale.GERMAN.toString() );
+        intent.putExtra( RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toString() );
         intent.putExtra( RecognizerIntent.EXTRA_MAX_RESULTS, 10 );
         this.startActivityForResult( intent, REQUEST_CODE_VOICE_RECOGNITION );
     }
